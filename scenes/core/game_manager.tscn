@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cg3ssjc8wc1cj"]
 
-[ext_resource type="Texture2D" uid="uid://cpmyqvporhabx" path="res://icon.svg" id="1_k3ko1"]
+[ext_resource type="PackedScene" uid="uid://cfg5kngxrofh2" path="res://scenes/levels/small_town.tscn" id="1_x6flg"]
 
 [node name="GameManager" type="Node"]
 
@@ -22,10 +22,11 @@ grow_vertical = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer"]
+handle_input_locally = false
 size = Vector2i(1152, 648)
 size_2d_override = Vector2i(1152, 648)
 size_2d_override_stretch = true
+render_target_update_mode = 4
 
-[node name="Sprite2D" type="Sprite2D" parent="Control/SubViewportContainer/SubViewport"]
-position = Vector2(50, 50)
-texture = ExtResource("1_k3ko1")
+[node name="Level" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("1_x6flg")]
+position = Vector2(336, 192)
