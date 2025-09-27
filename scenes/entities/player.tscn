@@ -1,9 +1,13 @@
-[gd_scene load_steps=35 format=3 uid="uid://c2smqqti56a81"]
+[gd_scene load_steps=39 format=3 uid="uid://c2smqqti56a81"]
 
 [ext_resource type="Script" uid="uid://dnf3tj3iwfh5e" path="res://scripts/gameplay/characters/PlayerInput.cs" id="1_1ie0h"]
+[ext_resource type="Script" uid="uid://6j066rrvvelf" path="res://scripts/gameplay/characters/Player.cs" id="1_ss7kx"]
 [ext_resource type="Texture2D" uid="uid://3dhivd7hm2g1" path="res://assets/characters/kalos_breeder__m__by_aveontrainer_dgvw9yk.png" id="1_ucweq"]
 [ext_resource type="Script" uid="uid://bytprf8mynay4" path="res://scripts/gameplay/characters/CharacterMovement.cs" id="2_42nxq"]
 [ext_resource type="Script" uid="uid://cesbqovg581i8" path="res://scripts/gameplay/characters/CharacterAnimation.cs" id="4_42nxq"]
+[ext_resource type="Script" uid="uid://dcesrpm414xca" path="res://scripts/utilities/StateMachine.cs" id="5_d4qa6"]
+[ext_resource type="Script" uid="uid://c2yatq5vm8if8" path="res://scripts/gameplay/characters/CharacterCollisionRayCast.cs" id="6_dnykm"]
+[ext_resource type="Script" uid="uid://dlqvpcq31tva3" path="res://scripts/gameplay/characters/states/PlayerRoamState.cs" id="6_ss7kx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0qees"]
 size = Vector2(16, 16)
@@ -267,7 +271,9 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("StateMachine")]
+script = ExtResource("1_ss7kx")
+StateMachine = NodePath("StateMachine")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 position = Vector2(8, 8)
@@ -281,24 +287,34 @@ script = ExtResource("2_42nxq")
 Character = NodePath("..")
 CharacterInput = NodePath("../Input")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." node_paths=PackedStringArray("CharacterInput", "CharacterMovement")]
 texture_filter = 1
 position = Vector2(8, 4)
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_6gvyl")
 animation = &"idle_down"
 script = ExtResource("4_42nxq")
+CharacterInput = NodePath("../Input")
+CharacterMovement = NodePath("../Movement")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(8, 8)
 zoom = Vector2(3, 3)
 position_smoothing_enabled = true
 
-[node name="CollisionRayCast" type="RayCast2D" parent="."]
+[node name="CollisionRayCast" type="RayCast2D" parent="." node_paths=PackedStringArray("CharacterInput")]
 position = Vector2(8, 8)
 target_position = Vector2(0, 16)
 collide_with_areas = true
+script = ExtResource("6_dnykm")
+CharacterInput = NodePath("../Input")
 
-[node name="StateMachine" type="Node" parent="."]
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("Customer")]
+script = ExtResource("5_d4qa6")
+Customer = NodePath("..")
 
-[node name="Roam" type="Node" parent="StateMachine"]
+[node name="Roam" type="Node" parent="StateMachine" node_paths=PackedStringArray("PlayerInput", "CharacterMovement", "StateOwner")]
+script = ExtResource("6_ss7kx")
+PlayerInput = NodePath("../../Input")
+CharacterMovement = NodePath("../../Movement")
+StateOwner = NodePath("../..")
