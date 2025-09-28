@@ -11,28 +11,28 @@ namespace Game.Gameplay
 		[ExportCategory("Nodes")]
 		[Export] public Node2D Character;
 		[Export] public CharacterInput CharacterInput;
-        // Removed to address collision bug caused by fast inputs.
-        //[Export] public CharacterCollisionRayCast CharacterCollisionRayCast;
+		// Removed to address collision bug caused by fast inputs.
+		//[Export] public CharacterCollisionRayCast CharacterCollisionRayCast;
 
 		[ExportCategory("Movement")]
 		[Export] public Vector2 TargetPosition = Vector2.Down;
 		[Export] public bool IsWalking = false;
-        [Export] public bool CollisionDetected = false;
+		[Export] public bool CollisionDetected = false;
 
 		public override void _Ready()
 		{
-            CharacterInput.Walk += StartWalking;
-            CharacterInput.Turn += Turn;
+			CharacterInput.Walk += StartWalking;
+			CharacterInput.Turn += Turn;
 
-            // Removed to address collision bug caused by fast inputs.
-            //CharacterCollisionRayCast.Collision += (value) => CollisionDetected = value;
+			// Removed to address collision bug caused by fast inputs.
+			//CharacterCollisionRayCast.Collision += (value) => CollisionDetected = value;
 
 			Core.Logger.Info("Loading character movement component ..");
 		}
 
 		public override void _Process(double delta)
 		{
-            Walk(delta);
+			Walk(delta);
 		}
 
 		public bool IsMoving()
@@ -40,57 +40,57 @@ namespace Game.Gameplay
 			return IsWalking;
 		}
 
-        public bool IsColliding()
-        {
-            return CollisionDetected;
-        }
+		public bool IsColliding()
+		{
+			return CollisionDetected;
+		}
 
-        private bool IsTargetOccupied(Vector2 targetPosition)
-        {
-            var spaceState = GetViewport().GetWorld2D().DirectSpaceState;
+		private bool IsTargetOccupied(Vector2 targetPosition)
+		{
+			var spaceState = GetViewport().GetWorld2D().DirectSpaceState;
 
-            Vector2 adjustedTargetPosition = targetPosition;
-            adjustedTargetPosition.X += 8;
-            adjustedTargetPosition.Y += 8;
+			Vector2 adjustedTargetPosition = targetPosition;
+			adjustedTargetPosition.X += 8;
+			adjustedTargetPosition.Y += 8;
 
-            var query = new PhysicsPointQueryParameters2D
-            {
-                Position = adjustedTargetPosition,
-                CollisionMask = 1,
-                CollideWithAreas = true,
-            };
+			var query = new PhysicsPointQueryParameters2D
+			{
+				Position = adjustedTargetPosition,
+				CollisionMask = 1,
+				CollideWithAreas = true,
+			};
 
-            var result = spaceState.IntersectPoint(query);
+			var result = spaceState.IntersectPoint(query);
 
-            if (result.Count > 0)
-            {
-                foreach (var collision in result)
-                {
-                    var collider = (Node)(GodotObject)collision["collider"];
-                    var colliderType = collider.GetType().Name;
+			if (result.Count > 0)
+			{
+				foreach (var collision in result)
+				{
+					var collider = (Node)(GodotObject)collision["collider"];
+					var colliderType = collider.GetType().Name;
 
-                    Core.Logger.Info(collider);
+					Core.Logger.Info(collider);
 
-                    switch (colliderType)
-                    {
-                        case "TileMapLayer":
-                            return true;
-                        default:
-                            return true;
-                    }
-                }
-            }
+					switch (colliderType)
+					{
+						case "TileMapLayer":
+							return true;
+						default:
+							return true;
+					}
+				}
+			}
 
-            return false;
-        }
+			return false;
+		}
 
 		public void StartWalking()
 		{
-            TargetPosition = Character.Position + CharacterInput.Direction * Globals.Instance.GRID_SIZE;
+			TargetPosition = Character.Position + CharacterInput.Direction * Globals.Instance.GRID_SIZE;
 
 			if (!IsMoving() && !IsTargetOccupied(TargetPosition))
 			{
-                EmitSignal(SignalName.Animation, "walk");
+				EmitSignal(SignalName.Animation, "walk");
 				Core.Logger.Info($"Moving from {Character.Position} to {TargetPosition}");
 				IsWalking = true;
 			}
@@ -109,7 +109,7 @@ namespace Game.Gameplay
 			}
 			else
 			{
-                EmitSignal(SignalName.Animation, "idle");
+				EmitSignal(SignalName.Animation, "idle");
 			}
 		}
 
@@ -121,7 +121,7 @@ namespace Game.Gameplay
 
 		public void Turn()
 		{
-            EmitSignal(SignalName.Animation, "turn");
+			EmitSignal(SignalName.Animation, "turn");
 		}
 
 		public void SnapPositionToGrid()
