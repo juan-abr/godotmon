@@ -28,7 +28,7 @@ namespace Game.Gameplay
 			if (Locked)
 				Core.Logger.Info("Uh oh! The door is locked ...");
 
-			// TODO: Change Scene
+            SceneManager.ChangeLevel(levelName: TargetLevelName, trigger: TargetLevelTrigger);
 		}
 
 		public override void _EnterTree()

@@ -71,13 +71,12 @@ namespace Game.Gameplay
 
 					Core.Logger.Info(collider);
 
-					switch (colliderType)
+					return colliderType switch
 					{
-						case "TileMapLayer":
-							return true;
-						default:
-							return true;
-					}
+						"TileMapLayer" => true,
+                        "SceneTrigger" => false,
+                        _ => true,
+					};
 				}
 			}
 
@@ -86,6 +85,9 @@ namespace Game.Gameplay
 
 		public void StartWalking()
 		{
+            if (SceneManager.IsChanging)
+                return;
+
 			TargetPosition = Character.Position + CharacterInput.Direction * Globals.Instance.GRID_SIZE;
 
 			if (!IsMoving() && !IsTargetOccupied(TargetPosition))

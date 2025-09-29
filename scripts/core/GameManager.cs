@@ -18,7 +18,7 @@ namespace Game.Core
 
 			Core.Logger.Info("Loading game manager ...");
 
-			// TODO: Change Scene on Start
+            SceneManager.ChangeLevel(spawn: true);
 		}
 
 		public static SubViewport GetGameViewPort()
